@@ -14,6 +14,8 @@ public class ToDo implements Serializable{
         this.title = title;
     }
 
+    public ToDo() {}
+
     public ToDo(String title) {
         this.title = title;
     }

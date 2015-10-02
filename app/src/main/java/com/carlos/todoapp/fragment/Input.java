@@ -2,25 +2,23 @@ package com.carlos.todoapp.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ListView;
 
 import com.carlos.todoapp.R;
 import com.carlos.todoapp.ToDo;
 import com.carlos.todoapp.ToDoDAO;
-import com.carlos.todoapp.ToDoListAdapter;
 
-/**
- * Created by carlos on 9/29/2015.
- */
-public class Input extends Fragment{
+public class Input extends Fragment implements TextWatcher {
     private static final String TODO_DAO = "ToDoDAO";
     private static final String TODO = "ToDo";
     private ToDoDAO toDoDAO;
     private ToDo toDo;
+    private boolean insert = false;
 
     /**
      * Creates a fragment able to create a new task.
@@ -61,9 +59,42 @@ public class Input extends Fragment{
         EditText taskName = (EditText) rootView.findViewById(R.id.taskName);
         if(toDo != null) {
             taskName.setText(toDo.getTitle());
+        }else{
+            toDo = new ToDo();
+            insert = true;
         }
+
+        taskName.addTextChangedListener(this);
 
         return rootView;
     }
 
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        toDo.setTitle(s.toString());
+    }
+
+    @Override
+    public void onPause() {
+        persistTask();
+        super.onPause();
+    }
+
+    public void persistTask(){
+        if(insert){
+            toDoDAO.insert(toDo);
+        }else{
+            toDoDAO.update(toDo);
+        }
+    }
 }

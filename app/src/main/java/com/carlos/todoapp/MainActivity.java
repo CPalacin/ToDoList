@@ -27,6 +27,10 @@ public class MainActivity extends AppCompatActivity implements TodoList.NewTaskL
         toDoDAO.insert(new ToDo("Second thing"));
         toDoDAO.insert(new ToDo("Last thing"));
 
+        switchToToDoListFragment();
+    }
+
+    private void switchToToDoListFragment() {
         TodoList toDoListFragment = TodoList.newInstance(toDoDAO);
         toDoListFragment.setNewTaskListener(this);
         switchFragment(toDoListFragment);
@@ -52,8 +56,34 @@ public class MainActivity extends AppCompatActivity implements TodoList.NewTaskL
         setSupportActionBar(toolbar);
     }
 
+    public void setHomeButtonVisibility(boolean visibility) {
+        getSupportActionBar().setHomeButtonEnabled(visibility);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(visibility);
+    }
+
     @Override
     public void createTask() {
+        setHomeButtonVisibility(true);
         Input inputFragment = Input.newInstance(toDoDAO);
+        switchFragment(inputFragment);
+    }
+
+    @Override
+    public void updateTask(ToDo toDo) {
+        setHomeButtonVisibility(true);
+        Input inputFragment = Input.newInstance(toDoDAO, toDo);
+        switchFragment(inputFragment);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            switchToToDoListFragment();
+        }
+
+        setHomeButtonVisibility(false);
+        return super.onOptionsItemSelected(item);
     }
 }

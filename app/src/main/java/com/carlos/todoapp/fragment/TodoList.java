@@ -1,17 +1,27 @@
 package com.carlos.todoapp.fragment;
 
 import android.app.Fragment;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.carlos.todoapp.R;
+import com.carlos.todoapp.ToDo;
 import com.carlos.todoapp.ToDoDAO;
 import com.carlos.todoapp.ToDoListAdapter;
+import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
+import com.fortysevendeg.swipelistview.SwipeListView;
 import com.getbase.floatingactionbutton.AddFloatingActionButton;
 
 
@@ -20,7 +30,7 @@ public class TodoList extends Fragment implements AdapterView.OnItemClickListene
     private static final String NEW_TASK_LISTENER = "newTaskListener";
 
 	private ToDoListAdapter adapter = null;
-    private ListView list;
+    private SwipeListView swipeListView;
     private ToDoDAO toDoDAO;
     private NewTaskListener newTaskListener;
 
@@ -46,11 +56,64 @@ public class TodoList extends Fragment implements AdapterView.OnItemClickListene
         super.onCreateView(inflater, container, savedInstanceState);
 		View rootView = inflater.inflate(R.layout.fragment_todo_list, container, false);
 
+        swipeListView = (SwipeListView) rootView.findViewById(R.id.todo_list_view);
         adapter = new ToDoListAdapter(getActivity(), toDoDAO.getAll());
-	    list= (ListView) rootView.findViewById(R.id.todo_list);
-        list.setAdapter(adapter);
-        list.setOnItemClickListener(this);
 
+        swipeListView.setSwipeListViewListener(new BaseSwipeListViewListener() {
+            @Override
+            public void onOpened(int position, boolean toRight) {
+                toDoDAO.delete(adapter.getItem(position));
+                swipeListView.dismiss(position);
+                adapter.notifyDataSetChanged();
+                Toast.makeText(getActivity(),String.format("onOpened %d", position),Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onClosed(int position, boolean fromRight) {
+                Toast.makeText(getActivity(),String.format("onClosed %d", position),Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onListChanged() {
+            }
+
+            @Override
+            public void onMove(int position, float x) {
+            }
+
+            @Override
+            public void onStartOpen(int position, int action, boolean right) {
+                Toast.makeText(getActivity(),String.format("onStartOpen %d", position),Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onStartClose(int position, boolean right) {
+                Toast.makeText(getActivity(),String.format("onClickFrontView %d", position),Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onClickFrontView(int position) {
+                Toast.makeText(getActivity(),String.format("onClickFrontView %d", position),Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onClickBackView(int position) {
+                Log.d("swipe", String.format("onClickBackView %d", position));
+                Toast.makeText(getActivity(),String.format("onClickBackView %d", position),Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onDismiss(int[] reverseSortedPositions) {
+                Toast.makeText(getActivity(),"deleting",Toast.LENGTH_SHORT).show();
+                for (int position : reverseSortedPositions) {
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+        });
+
+        swipeListView.setAdapter(adapter);
+        swipeListView.setOnItemClickListener(this);
         AddFloatingActionButton addButton = (AddFloatingActionButton) rootView.findViewById(R.id.normal_plus);
         addButton.setOnClickListener(this);
 		return rootView;
@@ -62,7 +125,7 @@ public class TodoList extends Fragment implements AdapterView.OnItemClickListene
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(getActivity(), "Pressed item", Toast.LENGTH_SHORT).show();
+        newTaskListener.updateTask(adapter.getItem(position));
     }
 
     @Override
@@ -72,5 +135,6 @@ public class TodoList extends Fragment implements AdapterView.OnItemClickListene
 
     public interface NewTaskListener{
         public void createTask();
+        public void updateTask(ToDo toDo);
     }
 }

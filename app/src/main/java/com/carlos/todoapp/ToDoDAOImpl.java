@@ -19,7 +19,8 @@ public class ToDoDAOImpl implements ToDoDAO, Serializable{
     }
 
     @Override
-    public void delete(long id) {
+    public void delete(ToDo toDo) {
+        toDoList.remove(toDo);
     }
 
     @Override

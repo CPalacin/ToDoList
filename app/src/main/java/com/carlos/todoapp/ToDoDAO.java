@@ -10,6 +10,6 @@ import java.util.UUID;
 public interface ToDoDAO extends Serializable{
     public void insert(ToDo toDo);
     public List<ToDo> getAll();
-    public void delete(long id);
+    public void delete(ToDo toDo);
     public void update(ToDo toDo);
 }
