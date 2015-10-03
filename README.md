@@ -5,13 +5,6 @@ This is an Android application to track to do tasks.
 Time spent: 15 hours spent in total
 
 Completed user stories:
-(Suggested) Persist the todo items into SQLite instead of a text file
-(Suggested) Improve style of the todo items in the list using a custom adapter
-(Suggested) Add support for completion due dates for todo items (and display within listview item)
-(Suggested) Use a DialogFragment instead of new Activity for editing items
-Add support for selecting the priority of each todo item (and display in listview item)
-Tweak the style improving the UI / UX, play with colors, images or backgrounds
-Anything else that you can get done to improve the app functionality!
 
  * [x] Required: Create a to do task
  * [x] Required: Delete a to do task
