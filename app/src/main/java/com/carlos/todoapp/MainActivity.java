@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.carlos.todoapp.fragment.Input;
 import com.carlos.todoapp.fragment.TodoList;
@@ -15,23 +16,19 @@ import com.carlos.todoapp.fragment.TodoList;
 public class MainActivity extends AppCompatActivity implements TodoList.NewTaskListener {
 
     private Toolbar toolbar;
-    private ToDoDAOImpl toDoDAO = new ToDoDAOImpl();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         toolbarCreation();
-
-        toDoDAO.insert(new ToDo("First thing"));
-        toDoDAO.insert(new ToDo("Second thing"));
-        toDoDAO.insert(new ToDo("Last thing"));
-
         switchToToDoListFragment();
     }
 
     private void switchToToDoListFragment() {
-        TodoList toDoListFragment = TodoList.newInstance(toDoDAO);
+        setToolbarTitle("To Do List");
+        TodoList toDoListFragment = new TodoList();
         toDoListFragment.setNewTaskListener(this);
         switchFragment(toDoListFragment);
     }
@@ -50,6 +47,15 @@ public class MainActivity extends AppCompatActivity implements TodoList.NewTaskL
         return true;
     }
 
+    private void setToolbarTitle(String title) {
+        if (toolbar != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            TextView toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+            Assets.setFontRoboto(toolbarTitle, this);
+            toolbarTitle.setText(title);
+        }
+    }
+
     private void toolbarCreation() {
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.getMenu().clear();
@@ -64,14 +70,14 @@ public class MainActivity extends AppCompatActivity implements TodoList.NewTaskL
     @Override
     public void createTask() {
         setHomeButtonVisibility(true);
-        Input inputFragment = Input.newInstance(toDoDAO);
+        Input inputFragment = new Input();
         switchFragment(inputFragment);
     }
 
     @Override
     public void updateTask(ToDo toDo) {
         setHomeButtonVisibility(true);
-        Input inputFragment = Input.newInstance(toDoDAO, toDo);
+        Input inputFragment = Input.newInstance(toDo);
         switchFragment(inputFragment);
     }
 

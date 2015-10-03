@@ -1,26 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<TableLayout  xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="15dp">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
+    <TableRow
+        android:id="@+id/task"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:padding="5dip" >
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Task Name"
+            android:textStyle="bold"
+            android:gravity="bottom"
             android:id="@+id/taskNameTag"
-            android:textSize="25sp"
+            android:textSize="20sp"
+            android:paddingRight="15dp"
             android:textIsSelectable="true"
             android:textColor="@color/abc_primary_text_material_light" />
 
         <EditText
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:textSize="20sp"
             android:hint="Task Name"
             android:id="@+id/taskName"/>
-    </LinearLayout>
-</LinearLayout>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <View
+            android:id="@+id/line2"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_weight="1"
+            android:background="@color/primaryColorDark"
+            android:padding="2dip" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/notes"
+        android:textSize="20sp"
+        android:textIsSelectable="true"
+        android:padding="5dip"
+        android:textColor="@color/abc_primary_text_material_light">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Note"
+            android:gravity="bottom"
+            android:id="@+id/textNote"
+            android:textSize="20sp"
+            android:paddingRight="15dp"
+            android:textStyle="bold"
+            android:textIsSelectable="true"
+            android:textColor="@color/abc_primary_text_material_light" />
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:hint="Task Name"
+            android:id="@+id/taskNote"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <View
+            android:id="@+id/line3"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_weight="1"
+            android:background="@color/primaryColorDark"
+            android:padding="2dip" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/priority"
+        android:textSize="20sp"
+        android:textIsSelectable="true"
+        android:padding="5dip"
+        android:textColor="@color/abc_primary_text_material_light">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Priority"
+            android:gravity="bottom"
+            android:id="@+id/textPriority"
+            android:textSize="20sp"
+            android:paddingRight="15dp"
+            android:textStyle="bold"
+            android:textIsSelectable="true"
+            android:textColor="@color/abc_primary_text_material_light" />
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:popupBackground="@color/primaryColor"
+            android:entries="@array/country_arrays"
+            android:prompt="@string/country_prompt" />
+    </TableRow>
+</TableLayout>

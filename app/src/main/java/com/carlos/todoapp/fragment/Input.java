@@ -7,37 +7,31 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.carlos.todoapp.R;
 import com.carlos.todoapp.ToDo;
 import com.carlos.todoapp.ToDoDAO;
+import com.carlos.todoapp.ToDoDAOImpl;
 
-public class Input extends Fragment implements TextWatcher {
-    private static final String TODO_DAO = "ToDoDAO";
+public class Input extends Fragment implements TextWatcher, AdapterView.OnItemSelectedListener {
     private static final String TODO = "ToDo";
-    private ToDoDAO toDoDAO;
+    private transient ToDoDAO toDoDAO;
     private ToDo toDo;
     private boolean insert = false;
-
-    /**
-     * Creates a fragment able to create a new task.
-     */
-    public static Input newInstance(ToDoDAO toDoDAO) {
-        return newInstance(toDoDAO, null);
-    }
+    private EditText taskName;
+    private EditText note;
+    private Spinner priority;
 
     /**
      * Creates a fragment able to update one task of the the list.
      */
-    public static Input newInstance(ToDoDAO toDoDAO, ToDo todo) {
+    public static Input newInstance(ToDo todo) {
         Input f = new Input();
         Bundle args = new Bundle();
-
-        args.putSerializable(TODO_DAO, toDoDAO);
-        if(todo != null){
-            args.putSerializable(TODO, todo);
-        }
+        args.putSerializable(TODO, todo);
         f.setArguments(args);
 
         return f;
@@ -46,8 +40,9 @@ public class Input extends Fragment implements TextWatcher {
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
-        toDoDAO = (ToDoDAO) getArguments().getSerializable(TODO_DAO);
-        toDo = (ToDo) getArguments().getSerializable(TODO);
+        if(getArguments() != null) {
+            toDo = (ToDo) getArguments().getSerializable(TODO);
+        }
     }
 
     @Override
@@ -56,16 +51,28 @@ public class Input extends Fragment implements TextWatcher {
         super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_input, container, false);
 
-        EditText taskName = (EditText) rootView.findViewById(R.id.taskName);
+        taskName = (EditText) rootView.findViewById(R.id.taskName);
+        note = (EditText) rootView.findViewById(R.id.taskNote);
+        priority = (Spinner) rootView.findViewById(R.id.spinner);
         if(toDo != null) {
             taskName.setText(toDo.getTitle());
+            note.setText(toDo.getNote());
+            System.out.println(toDo.getPriority());
+            if(toDo.getPriority().equalsIgnoreCase("low")){
+                priority.setSelection(0);
+            } else if(toDo.getPriority().equalsIgnoreCase("medium")){
+                priority.setSelection(1);
+            }else{
+                priority.setSelection(2);
+            }
         }else{
             toDo = new ToDo();
             insert = true;
         }
 
         taskName.addTextChangedListener(this);
-
+        note.addTextChangedListener(this);
+        priority.setOnItemSelectedListener(this);
         return rootView;
     }
 
@@ -81,7 +88,8 @@ public class Input extends Fragment implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable s) {
-        toDo.setTitle(s.toString());
+        toDo.setTitle(taskName.getText().toString());
+        toDo.setNote(note.getText().toString());
     }
 
     @Override
@@ -90,11 +98,29 @@ public class Input extends Fragment implements TextWatcher {
         super.onPause();
     }
 
+    private ToDoDAO getToDoDAO(){
+        if(toDoDAO == null){
+            toDoDAO = new ToDoDAOImpl(getActivity());
+        }
+
+        return toDoDAO;
+    }
+
     public void persistTask(){
         if(insert){
-            toDoDAO.insert(toDo);
+            getToDoDAO().insert(toDo);
         }else{
-            toDoDAO.update(toDo);
+            getToDoDAO().update(toDo);
         }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        toDo.setPriority(priority.getSelectedItem().toString());
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }

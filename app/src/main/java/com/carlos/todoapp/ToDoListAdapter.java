@@ -2,19 +2,13 @@ package com.carlos.todoapp;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.net.Uri;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.fortysevendeg.swipelistview.SwipeListView;
 
@@ -55,8 +49,9 @@ public class ToDoListAdapter extends ArrayAdapter<ToDo> {
             LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = li.inflate(R.layout.package_row, parent, false);
             holder = new ViewHolder();
-            holder.tvTitle = (TextView) convertView.findViewById(R.id.item_txt);
-            holder.tvDescription = (TextView) convertView.findViewById(R.id.back_txt);
+            holder.title = (TextView) convertView.findViewById(R.id.item_txt);
+            Assets.setFontRoboto(holder.title, getContext());
+
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -64,18 +59,15 @@ public class ToDoListAdapter extends ArrayAdapter<ToDo> {
 
         ((SwipeListView)parent).recycle(convertView, position);
 
-        holder.tvTitle.setText(item.getTitle());
-        holder.tvDescription.setText(item.getClass().toString());
+        holder.title.setText(item.getTitle());
 
         return convertView;
     }
 
     static class ViewHolder {
-        ImageView ivImage;
-        TextView tvTitle;
-        TextView tvDescription;
+        Spinner priority;
+        TextView title;
+        TextView note;
     }
-
-
 }
 
